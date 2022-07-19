@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:video_downloader/ads_manager.dart';
 import 'package:video_downloader/server.dart';
 import 'package:video_downloader/tiktok_model.dart';
@@ -18,19 +20,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool downloading = false;
+  bool startDownloading = false;
   var progressString = "";
   late BannerAd _bannerAd;
   bool adIsLoaded = false;
   double progress = 0.0;
   TiktokModel? tiktok;
-
+  final TextEditingController _textController = TextEditingController();
   @override
   void initState() {
     _initGoogleMobileAds();
     _bannerAd = BannerAd(
         adUnitId: AdsManager.bannerAdUnitId,
         request: const AdRequest(),
-        size: AdSize.banner,
+        size: AdSize.largeBanner,
         listener: BannerAdListener(
           onAdLoaded: (ad) {
             setState(() => adIsLoaded = true);
@@ -43,39 +46,32 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  final TextEditingController _textController = TextEditingController();
-
   Future<void> downloadFile() async {
     setState(() {
       downloading = false;
+      startDownloading = true;
     });
     tiktok = await Services.getTiktokDownload(uri: _textController.text);
-
     Dio dio = Dio();
     int name = Random().nextInt(1000);
     try {
       var dir = await getApplicationDocumentsDirectory();
       await dio.download(tiktok!.video!.last, "${dir.path}/$name.mp4",
           onReceiveProgress: (rec, total) {
-        print("Rec: $rec , Total: $total");
         setState(() {
           downloading = true;
+          startDownloading = false;
           progressString = "${((rec / total) * 100).toStringAsFixed(0)}%";
           progress = (rec / total * 100).toDouble();
-          print(progress);
         });
       });
       String path = "${dir.path}/$name.mp4";
-      await GallerySaver.saveVideo(path).then((bool? success) {
-        setState(() {
-          print('Video is saved');
-        });
-      });
+      await GallerySaver.saveVideo(path);
     } catch (e) {
       print(e);
     }
     setState(() {
-      progressString = "Done to Save";
+      progressString = "تم الحفظ إلى البوم الكاميرا";
     });
   }
 
@@ -100,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 _bannerAdWidget(),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.26,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -183,46 +179,54 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        downloading
-                            ? Column(
-                                children: [
-                                  Container(
-                                    height: 180,
-                                    width: 180,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                          tiktok!.cover!.last,
+                        startDownloading
+                            ? const Center(child: CircularProgressIndicator())
+                            : downloading
+                                ? Column(
+                                    children: [
+                                      Container(
+                                        height: 170,
+                                        width: 170,
+                                        decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                              tiktok!.cover!.last,
+                                            ),
+                                          ),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(20)),
                                         ),
                                       ),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(20)),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 35, vertical: 20),
-                                    child: LinearProgressIndicator(
-                                      value: progress,
-                                      color: const Color(0xffCFBC9F),
-                                      backgroundColor: const Color(0xff0881A3),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 0),
-                                    child: Text(
-                                      "Downloading File: $progressString",
-                                      style: const TextStyle(
-                                        color: Colors.black,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 15),
+                                        child: LinearPercentIndicator(
+                                          alignment: MainAxisAlignment.center,
+                                          width: 200,
+                                          lineHeight: 14.0,
+                                          percent: progress / 100,
+                                          barRadius: const Radius.circular(20),
+                                          backgroundColor:
+                                              const Color(0xffCFBC9F),
+                                          progressColor:
+                                              const Color(0xff0881A3),
+                                        ),
                                       ),
-                                    ),
+                                      Text(
+                                        progressString ==
+                                                "تم الحفظ إلى البوم الكاميرا"
+                                            ? progressString
+                                            : "$progressString : جاري التحميل",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                        ),
+                                      )
+                                    ],
                                   )
-                                ],
-                              )
-                            : const SizedBox(),
+                                : const SizedBox(),
                       ],
                     ),
                   ),
