@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.videoDownloader.nawaf.video_downloader">
+    package="com.savetik.videoDownloader">
    <application
-        android:label="video_downloader"
+        android:label="حفظ مقاطع التيك توك"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

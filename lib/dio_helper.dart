@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 class BaseUrl {
   static String uri =
-      "https://tiktok-downloader-download-tiktok-videos-without-watermark.p.rapidapi.com/vid/index";
+      "https://tiktok-download-without-watermark.p.rapidapi.com/analysis";
 }
 
 class DioHelper {
@@ -23,7 +23,7 @@ class DioHelper {
     Map<String, String> headers = {
       'X-RapidAPI-Key': 'c78fb7752emshb95ef22f72fd769p1468a5jsnfd923c5b8b17',
       'X-RapidAPI-Host':
-          'tiktok-downloader-download-tiktok-videos-without-watermark.p.rapidapi.com'
+          'tiktok-download-without-watermark.p.rapidapi.com'
     };
     try {
       Response response =

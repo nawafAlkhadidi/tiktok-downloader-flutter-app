@@ -1,4 +1,4 @@
-package com.videoDownloader.nawaf.video_downloader
+package com.savetik.videoDownloader
 
 import io.flutter.embedding.android.FlutterActivity
 
