@@ -50,15 +50,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> downloadFile() async {
     try {
       if (_textController.value.text == "") {
-        setState(() {
-          isEmpty = true;
-        });
-      } else {
+        setState(() =>isEmpty = true);
+      } 
+      if (_textController.value.text.contains("tiktok")) {
         setState(() {
           downloading = false;
           startDownloading = true;
           isEmpty = false;
         });
+        
         tiktok = await Services.getTiktokDownload(uri: _textController.text);
         Dio dio = Dio();
         int name = Random().nextInt(1000);
@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                 _bannerAdWidget(),
+                  _bannerAdWidget(),
                   Column(
                     children: [
                       SizedBox(
