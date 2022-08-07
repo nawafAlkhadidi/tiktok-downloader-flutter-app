@@ -48,6 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> downloadFile() async {
+    setState(() {
+          downloading = false;
+          startDownloading = false;
+          isEmpty = false;
+        });
     try {
       if (_textController.value.text == "") {
         setState(() =>isEmpty = true);
@@ -60,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
         
         tiktok = await Services.getTiktokDownload(uri: _textController.text);
+        if (tiktok!.code == 0 ){
         Dio dio = Dio();
         int name = Random().nextInt(1000);
         try {
@@ -81,7 +87,17 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           progressString = "تم الحفظ إلى البوم الكاميرا";
         });
-      }
+
+        } else {
+            setState(() {
+              _textController.clear();
+          downloading = false;
+          startDownloading = false;
+          isEmpty = true;
+        });
+        }
+       
+     }
     } catch (e) {
       print(e);
     }
