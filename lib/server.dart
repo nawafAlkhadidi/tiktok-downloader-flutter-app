@@ -10,4 +10,12 @@ class Services {
     tiktok = TiktokModel.fromJson(res.data);
     return tiktok;
   }
+
+
+void saveVideo(){
+
+
+  
+}
+
 }

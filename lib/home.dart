@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  //////////////////////!    !///////////////////////
   bool downloading = false;
   bool startDownloading = false;
   var progressString = "";
@@ -27,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   TiktokModel? tiktok;
   final TextEditingController _textController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
+  Dio dio = Dio();
+ //////////////////////!    !///////////////////////
   @override
   void initState() {
     _initGoogleMobileAds();
@@ -49,55 +51,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> downloadFile() async {
     setState(() {
-          downloading = false;
-          startDownloading = false;
-          isEmpty = false;
-        });
+      downloading = false;
+      startDownloading = false;
+      isEmpty = false;
+    });
     try {
       if (_textController.value.text == "") {
-        setState(() =>isEmpty = true);
-      } 
+        setState(() => isEmpty = true);
+      }
       if (_textController.value.text.contains("tiktok")) {
         setState(() {
           downloading = false;
           startDownloading = true;
           isEmpty = false;
         });
-        
-        tiktok = await Services.getTiktokDownload(uri: _textController.text);
-        if (tiktok!.code == 0 ){
-        Dio dio = Dio();
-        int name = Random().nextInt(1000);
-        try {
-          var dir = await getApplicationDocumentsDirectory();
-          String path = "${dir.path}/$name.mp4";
-          await dio.download(tiktok!.data!.play!, path,
-              onReceiveProgress: (rec, total) {
-            setState(() {
-              downloading = true;
-              startDownloading = false;
-              progressString = "${((rec / total) * 100).toStringAsFixed(0)}%";
-              progress = (rec / total * 100).toDouble();
-            });
-          });
-          await GallerySaver.saveVideo(path);
-        } catch (e) {
-          print(e);
-        }
-        setState(() {
-          progressString = "تم الحفظ إلى البوم الكاميرا";
-        });
 
+        tiktok = await Services.getTiktokDownload(uri: _textController.text);
+        if (tiktok!.code == 0) {
+          int name = Random().nextInt(1000);
+          try {
+            var dir = await getApplicationDocumentsDirectory();
+            String path = "${dir.path}/$name.mp4";
+            await dio.download(tiktok!.data!.play!, path,
+                onReceiveProgress: (rec, total) {
+              setState(() {
+                downloading = true;
+                startDownloading = false;
+                progressString = "${((rec / total) * 100).toStringAsFixed(0)}%";
+                progress = (rec / total * 100).toDouble();
+              });
+            });
+            await GallerySaver.saveVideo(path);
+          } catch (e) {
+            print(e);
+          }
+          setState(() {
+            progressString = "تم الحفظ إلى البوم الكاميرا";
+          });
         } else {
-            setState(() {
-              _textController.clear();
-          downloading = false;
-          startDownloading = false;
-          isEmpty = true;
-        });
+          setState(() {
+            _textController.clear();
+            downloading = false;
+            startDownloading = false;
+            isEmpty = true;
+          });
         }
-       
-     }
+      }
     } catch (e) {
       print(e);
     }
