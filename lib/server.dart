@@ -11,11 +11,4 @@ class Services {
     return tiktok;
   }
 
-
-void saveVideo(){
-
-
-  
-}
-
 }

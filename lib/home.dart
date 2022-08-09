@@ -1,11 +1,13 @@
 import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:video_downloader/ads_manager.dart';
+import 'package:video_downloader/center_loading.dart';
 import 'package:video_downloader/server.dart';
 import 'package:video_downloader/tiktok_model.dart';
 
@@ -65,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
           startDownloading = true;
           isEmpty = false;
         });
-
         tiktok = await Services.getTiktokDownload(uri: _textController.text);
         if (tiktok!.code == 0) {
           int name = Random().nextInt(1000);
@@ -83,8 +84,11 @@ class _HomeScreenState extends State<HomeScreen> {
             });
             await GallerySaver.saveVideo(path);
           } catch (e) {
-            print(e);
+            if (kDebugMode) {
+              print(e);
+            }
           }
+           _textController.clear();
           setState(() {
             progressString = "تم الحفظ إلى البوم الكاميرا";
           });
@@ -96,6 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
             isEmpty = true;
           });
         }
+      } else{
+         setState(() => isEmpty = true);
       }
     } catch (e) {
       print(e);
@@ -105,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff72F3EE).withOpacity(0.8),
+      backgroundColor: const Color(0xff0EA49F),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -123,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _bannerAdWidget(),
+                 _bannerAdWidget(),
                   Column(
                     children: [
                       SizedBox(
@@ -214,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       "أدخل رابط صحيح ",
                                       style: TextStyle(
                                           color: Colors.red,
-                                          fontSize: 16,
+                                          fontSize: 18,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   )
@@ -232,8 +238,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(0xffFB2D53).withOpacity(0.95),
+                  decoration:   BoxDecoration(
+                    color:const  Color(0xffFB2D53),
                     borderRadius:
                         const BorderRadius.only(topLeft: Radius.circular(200)),
                   ),
@@ -245,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           startDownloading
-                              ? const Center(child: CircularProgressIndicator())
+                              ? const CustomLoading()
                               : downloading
                                   ? Column(
                                       children: [

@@ -4,6 +4,9 @@
         android:label="حفظ مقاطع التيك توك"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+         <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3764698949994461~3266170783"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -30,9 +33,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-             <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3764698949994461~3266170783"/>
+            
 
     </application>
 </manifest>

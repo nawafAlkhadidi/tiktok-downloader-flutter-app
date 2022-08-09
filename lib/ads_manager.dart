@@ -2,16 +2,14 @@ import 'dart:io';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdsManager {
-  static bool testMode = true;
+  static bool testMode = false;
 
-  //late InterstitialAd? interstitialAd;
-  //int numInterstitialLoadAttempts = 0;
 
   static String get bannerAdUnitId {
     if (testMode == true) {
       return BannerAd.testAdUnitId;
     } else if (Platform.isAndroid) {
-      return "ca-app-pub-3764698949994461~3266170783";
+      return "ca-app-pub-3764698949994461/1667252300";
     } else if (Platform.isIOS) {
       return "ca-app-pub-1571703103044065/2885703588";
     } else {
