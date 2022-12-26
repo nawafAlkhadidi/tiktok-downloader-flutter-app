@@ -21,7 +21,7 @@ class DioHelper {
     required String endpoint,
   }) async {
     Map<String, String> headers = {
-      'X-RapidAPI-Key': 'c78fb7752emshb95ef22f72fd769p1468a5jsnfd923c5b8b17',
+      'X-RapidAPI-Key': '******',
       'X-RapidAPI-Host':
           'tiktok-download-without-watermark.p.rapidapi.com'
     };
